@@ -31,6 +31,7 @@ C:\Users\Asus\PlataformaCreditos\bin\Debug\net10.0\Microsoft.VisualStudio.Soluti
 C:\Users\Asus\PlataformaCreditos\bin\Debug\net10.0\Mono.TextTemplating.dll
 C:\Users\Asus\PlataformaCreditos\bin\Debug\net10.0\Newtonsoft.Json.dll
 C:\Users\Asus\PlataformaCreditos\bin\Debug\net10.0\Pipelines.Sockets.Unofficial.dll
+C:\Users\Asus\PlataformaCreditos\bin\Debug\net10.0\RabbitMQ.Client.dll
 C:\Users\Asus\PlataformaCreditos\bin\Debug\net10.0\SQLitePCLRaw.batteries_v2.dll
 C:\Users\Asus\PlataformaCreditos\bin\Debug\net10.0\SQLitePCLRaw.core.dll
 C:\Users\Asus\PlataformaCreditos\bin\Debug\net10.0\SQLitePCLRaw.provider.e_sqlite3.dll
@@ -283,4 +284,3 @@ C:\Users\Asus\PlataformaCreditos\obj\Debug\net10.0\refint\PlataformaCreditos.dll
 C:\Users\Asus\PlataformaCreditos\obj\Debug\net10.0\PlataformaCreditos.pdb
 C:\Users\Asus\PlataformaCreditos\obj\Debug\net10.0\PlataformaCreditos.genruntimeconfig.cache
 C:\Users\Asus\PlataformaCreditos\obj\Debug\net10.0\ref\PlataformaCreditos.dll
-C:\Users\Asus\PlataformaCreditos\bin\Debug\net10.0\RabbitMQ.Client.dll
