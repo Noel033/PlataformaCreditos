@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,6 +26,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Solicitud" asp-action="Index">Mis Solicitudes</a>
+                        </li>
+                        @{
+                            var ultimaSolicitud = Context.Session.GetString("UltimaSolicitud");
+                            if (!string.IsNullOrEmpty(ultimaSolicitud))
+                            {
+                                <li class="nav-item">
+                                    <span class="nav-link text-info">Ver última solicitud @ultimaSolicitud</span>
+                                </li>
+                            }
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
