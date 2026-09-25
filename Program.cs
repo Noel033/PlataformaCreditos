@@ -39,6 +39,12 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var app = builder.Build();
 
+app.Use(async (context, next) => 
+{ 
+    context.Request.Scheme = "https"; 
+    await next(); 
+});
+
 app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
@@ -53,7 +59,7 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseSession();
