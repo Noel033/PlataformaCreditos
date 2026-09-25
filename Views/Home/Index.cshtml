@@ -1,8 +1,14 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold text-primary">¡Bienvenido a PlataformaCreditos!</h1>
+    <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">Gestiona tus solicitudes de crédito de manera rápida, segura y 100% en línea. Inicia sesión para revisar el estado de tus solicitudes o aplica a un nuevo crédito hoy mismo.</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a asp-controller="Solicitud" asp-action="Crear" class="btn btn-primary btn-lg px-4 gap-3 shadow-sm rounded-pill">Solicitar Crédito</a>
+            <a asp-controller="Solicitud" asp-action="Index" class="btn btn-outline-secondary btn-lg px-4 shadow-sm rounded-pill">Ver Mis Solicitudes</a>
+        </div>
+    </div>
 </div>

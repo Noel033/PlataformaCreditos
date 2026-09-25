@@ -4,37 +4,49 @@
     ViewData["Title"] = "Detalle de Solicitud";
 }
 
-<h1>Detalle de la Solicitud #@Model.Id</h1>
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 rounded-lg">
+            <div class="card-header bg-info text-white rounded-top d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Detalle de la Solicitud #@Model.Id</h5>
+                <span class="badge @(Model.Estado == PlataformaCreditos.Models.EstadoSolicitud.Aprobado ? "bg-success" : (Model.Estado == PlataformaCreditos.Models.EstadoSolicitud.Rechazado ? "bg-danger" : "bg-warning text-dark")) fs-6 rounded-pill">
+                    @Model.Estado
+                </span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted fw-bold">Monto Solicitado</div>
+                    <div class="col-sm-8 fs-5 fw-semibold text-success">@Model.MontoSolicitado.ToString("C")</div>
+                </div>
+                <hr />
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted fw-bold">Fecha de Solicitud</div>
+                    <div class="col-sm-8">@Model.FechaSolicitud.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+                <hr />
+                
+                @if (Model.Estado == PlataformaCreditos.Models.EstadoSolicitud.Rechazado)
+                {
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-danger fw-bold">Motivo de Rechazo</div>
+                        <div class="col-sm-8 text-danger">@Model.MotivoRechazo</div>
+                    </div>
+                    <hr />
+                }
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-3">Monto Solicitado</dt>
-        <dd class="col-sm-9">@Model.MontoSolicitado.ToString("C")</dd>
-
-        <dt class="col-sm-3">Fecha de Solicitud</dt>
-        <dd class="col-sm-9">@Model.FechaSolicitud.ToString("dd/MM/yyyy HH:mm")</dd>
-
-        <dt class="col-sm-3">Estado</dt>
-        <dd class="col-sm-9">
-            <span class="badge @(Model.Estado == PlataformaCreditos.Models.EstadoSolicitud.Aprobado ? "bg-success" : (Model.Estado == PlataformaCreditos.Models.EstadoSolicitud.Rechazado ? "bg-danger" : "bg-warning text-dark"))">
-                @Model.Estado
-            </span>
-        </dd>
-
-        @if (Model.Estado == PlataformaCreditos.Models.EstadoSolicitud.Rechazado)
-        {
-            <dt class="col-sm-3">Motivo de Rechazo</dt>
-            <dd class="col-sm-9">@Model.MotivoRechazo</dd>
-        }
-
-        <dt class="col-sm-3">Cliente ID</dt>
-        <dd class="col-sm-9">@Model.ClienteId</dd>
-
-        <dt class="col-sm-3">Ingresos Mensuales del Cliente</dt>
-        <dd class="col-sm-9">@Model.Cliente?.IngresosMensuales.ToString("C")</dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Index" class="btn btn-secondary">Volver al Catálogo</a>
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted fw-bold">ID Cliente</div>
+                    <div class="col-sm-8">@Model.ClienteId</div>
+                </div>
+                <hr />
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted fw-bold">Ingresos Declarados</div>
+                    <div class="col-sm-8">@Model.Cliente?.IngresosMensuales.ToString("C")</div>
+                </div>
+            </div>
+            <div class="card-footer bg-light rounded-bottom text-end p-3">
+                <a asp-action="Index" class="btn btn-outline-secondary px-4 rounded-pill">Volver al Catálogo</a>
+            </div>
+        </div>
+    </div>
 </div>
