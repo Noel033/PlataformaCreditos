@@ -283,3 +283,4 @@ C:\Users\Asus\PlataformaCreditos\obj\Debug\net10.0\refint\PlataformaCreditos.dll
 C:\Users\Asus\PlataformaCreditos\obj\Debug\net10.0\PlataformaCreditos.pdb
 C:\Users\Asus\PlataformaCreditos\obj\Debug\net10.0\PlataformaCreditos.genruntimeconfig.cache
 C:\Users\Asus\PlataformaCreditos\obj\Debug\net10.0\ref\PlataformaCreditos.dll
+C:\Users\Asus\PlataformaCreditos\bin\Debug\net10.0\RabbitMQ.Client.dll

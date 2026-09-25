@@ -9,6 +9,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Cliente> Clientes { get; set; } = null!;
     public DbSet<SolicitudCredito> SolicitudesCredito { get; set; } = null!;
+    public DbSet<Notificacion> Notificaciones { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
