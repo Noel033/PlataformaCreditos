@@ -89,4 +89,65 @@ public class SolicitudController : Controller
 
         return View(solicitud);
     }
+
+    [HttpGet]
+    public IActionResult Crear()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Crear(decimal montoSolicitado)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.UsuarioId == userId);
+
+        if (cliente == null)
+        {
+            return NotFound("Cliente no encontrado.");
+        }
+
+        if (!cliente.Activo)
+        {
+            ModelState.AddModelError("", "El cliente asociado no está activo.");
+        }
+
+        var tienePendiente = await _context.SolicitudesCredito
+            .AnyAsync(s => s.ClienteId == cliente.Id && s.Estado == EstadoSolicitud.Pendiente);
+        
+        if (tienePendiente)
+        {
+            ModelState.AddModelError("", "Ya tienes una solicitud en estado Pendiente. No puedes crear otra.");
+        }
+
+        if (montoSolicitado > cliente.IngresosMensuales * 10)
+        {
+            ModelState.AddModelError("montoSolicitado", $"El monto solicitado no puede superar 10 veces tus ingresos mensuales ({(cliente.IngresosMensuales * 10).ToString("C")}).");
+        }
+        
+        if (montoSolicitado <= 0)
+        {
+            ModelState.AddModelError("montoSolicitado", "El monto solicitado debe ser mayor a 0.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View(montoSolicitado);
+        }
+
+        var nuevaSolicitud = new SolicitudCredito
+        {
+            ClienteId = cliente.Id,
+            MontoSolicitado = montoSolicitado,
+            FechaSolicitud = DateTime.UtcNow,
+            Estado = EstadoSolicitud.Pendiente
+        };
+
+        _context.SolicitudesCredito.Add(nuevaSolicitud);
+        await _context.SaveChangesAsync();
+
+        TempData["Success"] = "Solicitud de crédito creada exitosamente.";
+        return RedirectToAction(nameof(Index));
+    }
 }
