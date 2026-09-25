@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 
 namespace PlataformaCreditos.Areas.Identity.Pages.Account
 {
+    [Microsoft.AspNetCore.Mvc.IgnoreAntiforgeryToken]
     public class LoginModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
