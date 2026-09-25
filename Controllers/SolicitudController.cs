@@ -123,14 +123,14 @@ public class SolicitudController : Controller
     }
 
     [HttpGet]
-    public IActionResult Crear()
+    public IActionResult Create()
     {
         return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Crear(decimal montoSolicitado)
+    public async Task<IActionResult> Create(decimal montoSolicitado)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.UsuarioId == userId);
