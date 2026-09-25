@@ -59,6 +59,10 @@
     </div>
 }
 
+<div class="mb-3">
+    <span id="signalr-status" class="badge bg-secondary">Conectando...</span>
+</div>
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -72,12 +76,12 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr id="row-@item.Id">
                 <td>@item.Id</td>
                 <td>@item.MontoSolicitado.ToString("C")</td>
                 <td>@item.FechaSolicitud.ToShortDateString()</td>
                 <td>
-                    <span class="badge @(item.Estado == PlataformaCreditos.Models.EstadoSolicitud.Aprobado ? "bg-success" : (item.Estado == PlataformaCreditos.Models.EstadoSolicitud.Rechazado ? "bg-danger" : "bg-warning text-dark"))">
+                    <span id="badge-@item.Id" class="badge @(item.Estado == PlataformaCreditos.Models.EstadoSolicitud.Aprobado ? "bg-success" : (item.Estado == PlataformaCreditos.Models.EstadoSolicitud.Rechazado ? "bg-danger" : "bg-warning text-dark"))">
                         @item.Estado
                     </span>
                 </td>
@@ -88,3 +92,32 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/solicitudes")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("SolicitudEstadoActualizado", function (data) {
+            alert("¡Tu solicitud #" + data.solicitudId + " ahora está en estado " + data.estado + "!");
+            
+            const badge = document.getElementById("badge-" + data.solicitudId);
+            if (badge) {
+                badge.innerText = data.estado;
+                badge.className = "badge " + (data.estado === "Aprobado" ? "bg-success" : "bg-danger");
+            }
+        });
+
+        connection.start().then(function () {
+            document.getElementById("signalr-status").innerText = "Conectado";
+            document.getElementById("signalr-status").className = "badge bg-success";
+        }).catch(function (err) {
+            document.getElementById("signalr-status").innerText = "Desconectado";
+            document.getElementById("signalr-status").className = "badge bg-danger";
+            return console.error(err.toString());
+        });
+    </script>
+}
