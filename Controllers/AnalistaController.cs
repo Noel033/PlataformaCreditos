@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.AspNetCore.SignalR;
 using PlataformaCreditos.Data;
 using PlataformaCreditos.Models;
+using PlataformaCreditos.Hubs;
 
 namespace PlataformaCreditos.Controllers;
 
@@ -12,11 +14,13 @@ public class AnalistaController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly IDistributedCache _cache;
+    private readonly IHubContext<SolicitudesHub> _hubContext;
 
-    public AnalistaController(ApplicationDbContext context, IDistributedCache cache)
+    public AnalistaController(ApplicationDbContext context, IDistributedCache cache, IHubContext<SolicitudesHub> hubContext)
     {
         _context = context;
         _cache = cache;
+        _hubContext = hubContext;
     }
 
     public async Task<IActionResult> Index()
@@ -57,9 +61,10 @@ public class AnalistaController : Controller
         solicitud.Estado = EstadoSolicitud.Aprobado;
         await _context.SaveChangesAsync();
 
-        if (solicitud.Cliente.UsuarioId != null)
+        if (solicitud.Cliente!.UsuarioId != null)
         {
             await _cache.RemoveAsync($"solicitudes_{solicitud.Cliente.UsuarioId}");
+            await _hubContext.Clients.User(solicitud.Cliente.UsuarioId).SendAsync("SolicitudEstadoActualizado", new { solicitudId = solicitud.Id, estado = solicitud.Estado.ToString(), motivoRechazo = solicitud.MotivoRechazo });
         }
 
         TempData["Success"] = $"Solicitud #{id} aprobada con éxito.";
@@ -96,6 +101,7 @@ public class AnalistaController : Controller
         if (solicitud.Cliente!.UsuarioId != null)
         {
             await _cache.RemoveAsync($"solicitudes_{solicitud.Cliente.UsuarioId}");
+            await _hubContext.Clients.User(solicitud.Cliente.UsuarioId).SendAsync("SolicitudEstadoActualizado", new { solicitudId = solicitud.Id, estado = solicitud.Estado.ToString(), motivoRechazo = solicitud.MotivoRechazo });
         }
 
         TempData["Success"] = $"Solicitud #{id} rechazada.";
