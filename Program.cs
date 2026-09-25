@@ -37,6 +37,11 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Clear(); 
 });
 
+builder.Services.ConfigureApplicationCookie(options => {
+    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.None;
+});
+
 var app = builder.Build();
 
 app.Use(async (context, next) => 
