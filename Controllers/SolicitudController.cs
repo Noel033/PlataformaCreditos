@@ -8,6 +8,9 @@ using System.Security.Claims;
 
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
+using RabbitMQ.Client;
+using System.Text;
 
 namespace PlataformaCreditos.Controllers;
 
@@ -16,11 +19,13 @@ public class SolicitudController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly IDistributedCache _cache;
+    private readonly IConfiguration _configuration;
 
-    public SolicitudController(ApplicationDbContext context, IDistributedCache cache)
+    public SolicitudController(ApplicationDbContext context, IDistributedCache cache, IConfiguration configuration)
     {
         _context = context;
         _cache = cache;
+        _configuration = configuration;
     }
 
     public async Task<IActionResult> Index(EstadoSolicitud? estado, decimal? montoMinimo, decimal? montoMaximo, DateTime? fechaInicio, DateTime? fechaFin)
@@ -177,7 +182,51 @@ public class SolicitudController : Controller
         var cacheKey = $"solicitudes_{userId}";
         await _cache.RemoveAsync(cacheKey);
 
+        try
+        {
+            var factory = new ConnectionFactory { Uri = new Uri(_configuration["RabbitMQ:ConnectionString"]!) };
+            using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
+            
+            var queueName = _configuration["RabbitMQ:QueueName"]!;
+            channel.QueueDeclare(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            
+            channel.ConfirmSelect();
+            
+            var evento = new {
+                MessageId = Guid.NewGuid().ToString(),
+                SolicitudId = nuevaSolicitud.Id,
+                UsuarioId = userId,
+                FechaEventoUtc = DateTime.UtcNow
+            };
+            
+            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(evento));
+            
+            var properties = channel.CreateBasicProperties();
+            properties.Persistent = true;
+            
+            channel.BasicPublish(exchange: string.Empty, routingKey: queueName, mandatory: true, basicProperties: properties, body: body);
+            
+            channel.WaitForConfirmsOrDie();
+        }
+        catch (Exception)
+        {
+            // Error publishing, but do not delete request
+        }
+
         TempData["Success"] = "Solicitud de crédito creada exitosamente.";
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> MisNotificaciones()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var notificaciones = await _context.Notificaciones
+            .Where(n => n.UsuarioId == userId)
+            .OrderByDescending(n => n.FechaProcesamientoUtc)
+            .ToListAsync();
+
+        return View(notificaciones);
     }
 }

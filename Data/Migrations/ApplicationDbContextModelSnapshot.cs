@@ -321,6 +321,35 @@ namespace PlataformaCreditos.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PlataformaCreditos.Models.Notificacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("FechaProcesamientoUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MessageId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SolicitudId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Texto")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notificaciones");
+                });
+
             modelBuilder.Entity("PlataformaCreditos.Models.SolicitudCredito", b =>
                 {
                     b.Property<int>("Id")
