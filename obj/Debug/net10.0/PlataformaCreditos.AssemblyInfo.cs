@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PlataformaCreditos")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+52d1e4969d3e0faaa14cee7de7b90c7a133d0ab3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7a5e82574a11fbfe9bc994182436cc1fff5b8dcf")]
 [assembly: System.Reflection.AssemblyProductAttribute("PlataformaCreditos")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PlataformaCreditos")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
