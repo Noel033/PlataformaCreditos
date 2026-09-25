@@ -1,0 +1,85 @@
+@model IEnumerable<PlataformaCreditos.Models.SolicitudCredito>
+
+@{
+    ViewData["Title"] = "Panel de Analista";
+}
+
+<h1>Panel de Analista - Solicitudes Pendientes</h1>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cliente (Email)</th>
+            <th>Ingresos Mensuales</th>
+            <th>Monto Solicitado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Cliente?.Usuario?.Email</td>
+                <td>@item.Cliente?.IngresosMensuales.ToString("C")</td>
+                <td>@item.MontoSolicitado.ToString("C")</td>
+                <td>@item.FechaSolicitud.ToShortDateString()</td>
+                <td>
+                    <!-- Botón Aprobar -->
+                    <form asp-action="Aprobar" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('¿Seguro que deseas aprobar esta solicitud?');">Aprobar</button>
+                    </form>
+
+                    <!-- Botón Rechazar que abre modal -->
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalRechazar-@item.Id">
+                        Rechazar
+                    </button>
+
+                    <!-- Modal Rechazar -->
+                    <div class="modal fade" id="modalRechazar-@item.Id" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form asp-action="Rechazar" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Rechazar Solicitud #@item.Id</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <div class="form-group">
+                                            <label for="motivoRechazo" class="form-label">Motivo de Rechazo</label>
+                                            <textarea name="motivoRechazo" class="form-control" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-danger">Confirmar Rechazo</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
